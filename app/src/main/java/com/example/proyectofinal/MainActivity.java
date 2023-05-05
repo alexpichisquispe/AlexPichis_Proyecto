@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,7 +19,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -80,14 +93,18 @@ public class MainActivity extends AppCompatActivity {
     /*Variables para marcar, cada uno establece la vida de cada Usuario y de Cada Enemigo, por ultimo
     dos variables que uso para el ataque Cargado y Curacion que se realizan en el ultimo Boss Enemigo */
     private int contador = 0;
-    private int vidaPrimerBoss = 50,vidaSegundoBoss = 80,vidaTercerBoss = 100,vidaCuartoBoss = 120,vidaQuintoBoss = 240;
+    private int vidaPrimerBoss = 20,vidaSegundoBoss = 20,vidaTercerBoss = 20,vidaCuartoBoss = 20,vidaQuintoBoss = 20;
     private int vidaUsuario = 50,vidaUsuario2 = 80,vidaUsuario3 = 100,vidaUsuario4 = 120,vidaUsuario5 = 150;
     private int ContarAtaqueCargado = 0;
     private int ContarCuracion = 0;
+    private static final String TAG = "MiActividad";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference cazadoresRef = db.collection("cazadores");
+
         //Inicializa la imagen de fondo
         FondoimageView = new ImageView(this);
         FondoimageView.setBackgroundResource(R.drawable.fondoprincipio);
@@ -236,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         IngresarNombre.setLayoutParams(lp1);
         IngresarNombre.setX(0);
         IngresarNombre.setY(-500);
+
 
         //Boton para ir cambiando el genero del cazador que se va a usar durante el resto del juego
         Button cambiarGeneroButton = new Button(this);
@@ -461,6 +479,24 @@ public class MainActivity extends AppCompatActivity {
                 int backgroundImage = 0;
                 if (FondoimageView.getTag() == null || (int)FondoimageView.getTag() == R.drawable.fondoprincipio) {
                     backgroundImage = R.drawable.fondofuncionamiento;
+                    String nombreCazador = IngresarNombre.getText().toString();
+                    String gen = GeneroTexto.getText().toString();
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("Nombre", nombreCazador);
+                    data.put("Genero", gen);
+                    cazadoresRef.document().set(data)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Log.d(TAG, "Nombre guardado en Firestore Database");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.w(TAG, "Error al guardar nombre en Firestore Database", e);
+                                }
+                            });
                 } else if ((int)FondoimageView.getTag() == R.drawable.fondofuncionamiento) {
                     backgroundImage = R.drawable.fondohistoria;
                     if(backgroundImage == R.drawable.fondohistoria) {
@@ -1947,6 +1983,9 @@ public class MainActivity extends AppCompatActivity {
         paint.setStyle(Paint.Style.FILL_AND_STROKE); // Establece el estilo de dibujo del borde como relleno y trazo
         paint.setColor(Color.WHITE); // Establece el color del texto en blanco
         paint.setShadowLayer(10, 0, 0, Color.BLACK); // Agrega un sombreado alrededor del texto con el desplazamiento (0,0) y el color negro.
+
+
+
         // Crear un botón para salir del juego
         Button botonCerrar = new Button(this);
         botonCerrar.setText("SALIR");

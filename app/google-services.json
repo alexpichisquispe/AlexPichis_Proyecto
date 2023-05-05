@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "113943273647",
+    "project_id": "hunterwyverns",
+    "storage_bucket": "hunterwyverns.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113943273647:android:850dd8598febf257e7b45a",
+        "android_client_info": {
+          "package_name": "com.example.proyectofinal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113943273647-uoh0gmnsvoctilmlh3p999u4ri40ik5n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPwVNRNTHT7iuCKhAsjwmor3NgVtmCJAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113943273647-uoh0gmnsvoctilmlh3p999u4ri40ik5n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
